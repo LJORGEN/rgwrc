@@ -1,0 +1,18 @@
+Package: rgwrc
+Type: Package
+Title: Geographically Weighted Regression Clustering
+Version: 0.1.0
+Author: Luke Jorgensen
+Maintainer: Luke Jorgensen <ljorgen88@gmail.com>
+Description: Uses gwr and culster analysis for automated neighborhood generation,
+    in conjuction with geo-spatial analysis functions.
+License: use_mit_license()
+Encoding: UTF-8
+LazyData: true
+Imports:
+    dplyr,
+    data.table,
+    NbClust,
+    reticulate,
+    sf
+RoxygenNote: 7.2.3
