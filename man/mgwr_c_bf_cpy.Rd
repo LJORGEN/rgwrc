@@ -8,9 +8,9 @@ mgwr_c_bf_cpy(
   yf,
   x,
   data,
-  direc,
-  lonlat,
-  weight,
+  direc = "backward",
+  lonlat = TRUE,
+  weight = "bisquare",
   clustnum,
   Fixed_K = "Yes",
   bestC = "No",
@@ -19,38 +19,50 @@ mgwr_c_bf_cpy(
 )
 }
 \arguments{
-\item{yf}{Dependent variable}
+\item{yf}{Dependent variable.}
 
-\item{x}{Independent variables}
+\item{x}{Independent variables.}
 
-\item{data}{data.frame}
+\item{data}{data.frame.}
 
-\item{direc}{method to use for step wise regression options are 'none', 'both', 'forward', 'backward'}
+\item{direc}{method to use for step wise regression, options are 'none', 'both', 'forward', 'backward'.
+The default is 'backward'.}
 
-\item{lonlat}{IF TRUE calculates the great circle distance, otherwise uses euclidean distance}
+\item{lonlat}{IF TRUE calculates the great circle distance, otherwise uses euclidean distance.
+The default is TRUE.}
 
-\item{weight}{kernel distribution function: 'gaussian','bisquare'}
+\item{weight}{kernel distribution function: 'gaussian','bisquare', default is 'bisquare'.}
 
-\item{clustnum}{Number of clusters to run the function over}
+\item{clustnum}{Number of clusters to run the function over.}
 
 \item{Fixed_K}{Assign initial starting centers for Kmeans for consistent results, for repeated analysis}
 
-\item{bestC}{If "Yes" uses the NbClust package to determine the optimal number of clusters, can be time consuming, default is 'No'}
+\item{bestC}{If "Yes" uses the NbClust package to determine the optimal number of clusters, can be time
+consuming, default is 'No'. Specific methods can be used as the input as well,
+i.e. 'friedman', see the NbClust function for more methods.}
 
-\item{distmethod}{The metric system to use for the distance matrix, default is 'euclidean'}
+\item{distmethod}{The metric system to use for the distance matrix, default is 'euclidean'.
+Other methods are "maximum", "manhattan", "canberra", "binary" or "minkowski". See dist
+for more details.}
 
-\item{hclustmethod}{Method to use for hclust function, default is 'complete'}
+\item{hclustmethod}{Method to use for hclust function, default is 'complete'. Other methods:
+"ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid".
+See hclust for more details.}
 }
 \value{
-predicted values data.frame and GWR summary results
+GWR summary results for analysis of the overall GWR performance. GWRC summary
+results that describe the models performance using the given number of clusters as
+location proxies. In addition a list of data.frames is outputted called 'GWCBFDataCPY'.
+'GWCBFDataCPY' contains all the clustering data results as a result of GWRC.
 }
 \description{
 Assigns the weighted predictions from a GWR model in addition to coordinates
-to a Kmeans and Hierarchical clustering algorithms. Regression Analysis is performed
-on each cluster up to some designated max to determine what is the optimal neighborhood
-to use for regression analysis. Polygon overlap of the clusters is taken into account.
+to Kmeans and Hierarchical clustering algorithms. Regression analysis is performed
+on each clustering iteration up to some designated max to determine what is the optimal neighborhood
+composition to use. In addition polygon overlap of the clusters is taken into account.
 }
 \examples{
+#Run the Geographically Weighted Regression Clustering Best Fit function.
 mgwr_c_bf_cpy(
 yf = zillow_1k[,c("value"),drop = FALSE],
 x = zillow_1k[,c("nbaths","nbeds","area","age")],
@@ -63,4 +75,9 @@ bestC = "No",
 distmethod = "euclidean",
 hclustmethod = "complete"
 )
+#Import ggplot.
+library(ggplot2)
+#view the Kmeans clustering results for 3 clusters.
+ggplot(GWCBFDataCPY[[3]], aes(coordx, coordy, colour = as.factor(clusterKMeans_3))) +
+geom_point()
 }

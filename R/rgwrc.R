@@ -304,22 +304,34 @@ initialKMeansStartingPoints <- function(x, n = 10) {
 #' Geographically Weighted Regression Clustering Best Fit Function
 #'
 #' Assigns the weighted predictions from a GWR model in addition to coordinates
-#' to a Kmeans and Hierarchical clustering algorithms. Regression Analysis is performed
-#' on each cluster up to some designated max to determine what is the optimal neighborhood
-#' to use for regression analysis. Polygon overlap of the clusters is taken into account.
-#' @param yf Dependent variable
-#' @param x Independent variables
-#' @param data data.frame
-#' @param direc method to use for step wise regression options are 'none', 'both', 'forward', 'backward'
-#' @param lonlat IF TRUE calculates the great circle distance, otherwise uses euclidean distance
-#' @param weight kernel distribution function: 'gaussian','bisquare'
-#' @param clustnum Number of clusters to run the function over
+#' to Kmeans and Hierarchical clustering algorithms. Regression analysis is performed
+#' on each clustering iteration up to some designated max to determine what is the optimal neighborhood
+#' composition to use. In addition polygon overlap of the clusters is taken into account.
+#' @param yf Dependent variable.
+#' @param x Independent variables.
+#' @param data data.frame.
+#' @param direc method to use for step wise regression, options are 'none', 'both', 'forward', 'backward'.
+#' The default is 'backward'.
+#' @param lonlat IF TRUE calculates the great circle distance, otherwise uses euclidean distance.
+#' The default is TRUE.
+#' @param weight kernel distribution function: 'gaussian','bisquare', default is 'bisquare'.
+#' @param clustnum Number of clusters to run the function over.
 #' @param Fixed_K Assign initial starting centers for Kmeans for consistent results, for repeated analysis
-#' @param bestC If "Yes" uses the NbClust package to determine the optimal number of clusters, can be time consuming, default is 'No'
-#' @param distmethod The metric system to use for the distance matrix, default is 'euclidean'
-#' @param hclustmethod Method to use for hclust function, default is 'complete'
-#' @return predicted values data.frame and GWR summary results
+#' @param bestC If "Yes" uses the NbClust package to determine the optimal number of clusters, can be time
+#' consuming, default is 'No'. Specific methods can be used as the input as well,
+#' i.e. 'friedman', see the NbClust function for more methods.
+#' @param distmethod The metric system to use for the distance matrix, default is 'euclidean'.
+#' Other methods are "maximum", "manhattan", "canberra", "binary" or "minkowski". See dist
+#' for more details.
+#' @param hclustmethod Method to use for hclust function, default is 'complete'. Other methods:
+#' "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid".
+#' See hclust for more details.
+#' @return GWR summary results for analysis of the overall GWR performance. GWRC summary
+#' results that describe the models performance using the given number of clusters as
+#' location proxies. In addition a list of data.frames is outputted called 'GWCBFDataCPY'.
+#' 'GWCBFDataCPY' contains all the clustering data results as a result of GWRC.
 #' @examples
+#' #Run the Geographically Weighted Regression Clustering Best Fit function.
 #' mgwr_c_bf_cpy(
 #' yf = zillow_1k[,c("value"),drop = FALSE],
 #' x = zillow_1k[,c("nbaths","nbeds","area","age")],
@@ -332,8 +344,13 @@ initialKMeansStartingPoints <- function(x, n = 10) {
 #' distmethod = "euclidean",
 #' hclustmethod = "complete"
 #' )
+#' #Import ggplot.
+#' library(ggplot2)
+#' #view the Kmeans clustering results for 3 clusters.
+#' ggplot(GWCBFDataCPY[[3]], aes(coordx, coordy, colour = as.factor(clusterKMeans_3))) +
+#' geom_point()
 #' @export
-mgwr_c_bf_cpy <- function(yf, x, data, direc, lonlat, weight, clustnum, Fixed_K = "Yes", bestC = "No", distmethod = "euclidean", hclustmethod = 'complete'
+mgwr_c_bf_cpy <- function(yf, x, data, direc = 'backward', lonlat = TRUE, weight = 'bisquare', clustnum, Fixed_K = "Yes", bestC = "No", distmethod = "euclidean", hclustmethod = 'complete'
 ) { #geographic weighted regression best fit calculator
 
   #yf dependent variable
