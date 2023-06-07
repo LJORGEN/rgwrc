@@ -1006,7 +1006,7 @@ empty_rgwrc_hold <- function() {
 #' @export
 rgwrc_miniconda_info <- function() {
 message("#####Install reticulate to serve as the link between R and Miniconda#####
-install.packages(reticulate)
+install.packages(\"reticulate\")
 library(reticulate) #Attach reticulate
 #####Install Miniconda#####
 install_miniconda(path = miniconda_path(), update = TRUE, force = FALSE)
