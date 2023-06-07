@@ -40,6 +40,11 @@ For more information on mgwr please vist https://mgwr.readthedocs.io/en/latest/i
     #library(reticulate)
   #}
 }
+#####set wd upon loading package#####
+.onLoad <- function(libname, pkgname) {
+  setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
+}
+
 
 #' Mode Function
 #'
