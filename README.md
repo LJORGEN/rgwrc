@@ -11,3 +11,7 @@ when the package is loaded. This is necessary to establish a perstistant link be
 and the Python scripts.
 
 Refer to the 'help' page in R studio for function details and examples.
+
+#####R code to install rgwrc from github#####
+library(devtools)
+devtools::install_github("LJORGEN/rgwrc")
