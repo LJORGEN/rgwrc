@@ -6,8 +6,8 @@ generate neighborhoods to be used as location proxies in regression analysis.
 
 rgwrc requires the installation of the miniconda package to serve as a bridge between R and Python. 
 
-In addition a directory called "rgwrc_hold" will be genertated in your computers Public folder under C:/Users/Public/ automatically
-when the package is loaded. This is necessary to establish a perstistant link between live R data and the Python scripts. If you do 
-not have the path C:/Users/Public/ it is recommended to construct one. Otherwise the package will not be able to fully function.
+In addition a directory called "rgwrc_hold" will be genertated in the package directory in the computers' R library automatically
+when the package is loaded. This is necessary to establish a perstistant link between live R data being run in the rgwrc functions
+and the Python scripts.
 
 Refer to the 'help' page in R studio for function details and for examples on how to use the functions.
