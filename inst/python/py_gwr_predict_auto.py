@@ -6,11 +6,11 @@ import pandas as pd
 from mgwr.sel_bw import Sel_BW
 from mgwr.gwr import GWR,GWRResults
 
-sales_py = pd.read_csv('C:/Users/Public/rgwrc_hold/sales_r.csv',sep=',')
-pop_py = pd.read_csv('C:/Users/Public/rgwrc_hold/pop_r.csv',sep=',')
-split_py = pd.read_csv('C:/Users/Public/rgwrc_hold/split_r.csv',sep=',')
+sales_py = pd.read_csv('rgwrc/rgwrc_hold/sales_r.csv',sep=',')
+pop_py = pd.read_csv('rgwrc/rgwrc_hold/pop_r.csv',sep=',')
+split_py = pd.read_csv('rgwrc/rgwrc_hold/split_r.csv',sep=',')
 split_py_e = split_py.iloc[0]["splitnum"]
-TFdf_py = pd.read_csv('C:/Users/Public/rgwrc_hold/TFdf_r.csv',sep=',')
+TFdf_py = pd.read_csv('rgwrc/rgwrc_hold/TFdf_r.csv',sep=',')
 TF_py = TFdf_py.iloc[0]["TF"]
 #unsampled data cannot be larger than the modeled data so break the population into segments to be fitted
 #slipt pop data with numpy

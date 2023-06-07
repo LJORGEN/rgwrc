@@ -1,44 +1,44 @@
 #####Load required dependencies#####
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   packageStartupMessage("This is version ", packageVersion(pkgname),
                         " of ", pkgname)
 
-  packageStartupMessage("rgwrc uses the following R libraries:
-  dplyr,data.table,NbClust,sf,reticulate")
+  packageStartupMessage("rgwrc uses functions from the following R libraries:dplyr,data.table,NbClust,sf,reticulate")
 
-  packageStartupMessage("rgwrc uses the following pyhton libraries:
-  pandas, scikit-learn, mgwr, numpy==1.22.4, geopandas.
-  Default MGWR package numpy version is currently depreciated.
-  For more information on mgwr please vist
-  https://mgwr.readthedocs.io/en/latest/index.html")
+  packageStartupMessage("rgwrc uses the following python libraries:pandas, scikit-learn, mgwr, numpy==1.22.4, geopandas.
+For information on installing miniconda and the assocated python libraries run 'rgwrc_miniconda_info()'.
+For more information on mgwr please vist https://mgwr.readthedocs.io/en/latest/index.html")
 
-  user_permission <- utils::askYesNo("Is miniconda already installed?
-No to install miniconda.")
+  #set the working directory to the library containing the rgwrc package
+  setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
 
-  if (isFALSE(user_permission)) {
+  #user_permission <- utils::askYesNo("Is miniconda already installed?
+#No to install miniconda.")
+
+  #if (isFALSE(user_permission)) {
     #R libraries
-    library(dplyr)
-    library(data.table)
-    library(NbClust)
-    library(sf)
-    library(reticulate)
+    #library(dplyr)
+    #library(data.table)
+    #library(NbClust)
+    #library(sf)
+    #library(reticulate)
 
-    reticulate::install_miniconda(path = miniconda_path(), update = TRUE, force = FALSE)
+    #reticulate::install_miniconda(path = miniconda_path(), update = TRUE, force = FALSE)
 
     #install python libraries
-    py_install(packages = c("pandas", "scikit-learn","mgwr"))
-    py_install(packages = c("numpy==1.22.4")) #default MGWR package numpy version is depreciated
-    py_install(packages = c("geopandas"))
-    use_condaenv(condaenv = "r-reticulate", conda = "auto")
-    py_config()
-  } else if ((isTRUE(user_permission))) {
+    #py_install(packages = c("pandas", "scikit-learn","mgwr"))
+    #py_install(packages = c("numpy==1.22.4")) #default MGWR package numpy version is depreciated
+    #py_install(packages = c("geopandas"))
+    #use_condaenv(condaenv = "r-reticulate", conda = "auto")
+    #py_config()
+  #} else if ((isTRUE(user_permission))) {
     #R libraries
-    library(dplyr)
-    library(data.table)
-    library(NbClust)
-    library(sf)
-    library(reticulate)
-  }
+    #library(dplyr)
+    #library(data.table)
+    #library(NbClust)
+    #library(sf)
+    #library(reticulate)
+  #}
 }
 
 #' Mode Function
@@ -407,26 +407,28 @@ mgwr_c_bf_cpy <- function(yf, x, data, direc = 'backward', lonlat = TRUE, weight
   mgwrdata <- select(mgwrdata, Longitude, Latitude, TASP, everything()) #data.frame reorder using dplyr
 
   #save R dataframe as csv for python scripts to call from
-  write.csv(mgwrdata, "C:\\Users\\Public\\rgwrc_hold\\sales_r.csv", row.names=FALSE)
+  write.csv(mgwrdata, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"sales_r.csv")), row.names=FALSE)
 
   TFdf <- data.frame( #put results into an R object
     "TF" = lonlat
     , stringsAsFactors = FALSE)
 
-  write.csv(TFdf, "C:\\Users\\Public\\rgwrc_hold\\TFdf_r.csv", row.names=FALSE)
+  write.csv(TFdf, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"TFdf_r.csv")), row.names=FALSE)
 
   if (weight == "gaussian") {
 
     #run python mgwr gaussian kernel
     start_time <- Sys.time()
-    source_python("py_mgwr_gauss_auto.py") #python script
+    #source_python("py_mgwr_gauss_auto.py") #python script
+    source_python(system.file("python/py_mgwr_gauss_auto.py",package="rgwrc"))
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
     #end of run
   } else {
     #run the gwr function with bisquare kernel
     start_time <- Sys.time()
-    source_python("py_mgwr_bisquare_auto.py")
+    #source_python("py_mgwr_bisquare_auto.py")
+    source_python(system.file("python/py_mgwr_bisquare_auto.py",package="rgwrc"))
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
     #end of run
@@ -456,7 +458,7 @@ mgwr_c_bf_cpy <- function(yf, x, data, direc = 'backward', lonlat = TRUE, weight
   data.scaled$coordy <- as.numeric(data.scaled$coordy)
 
   #export scaled data to python package
-  write.csv(data.scaled, "C:\\Users\\Public\\rgwrc_hold\\datascaled_r.csv", row.names=FALSE)
+  #write.csv(data.scaled, "C:\\Program Files\\R\\R-4.3.0\\library\\rgwrc\\rgwrc_hold\\datascaled_r.csv", row.names=FALSE)
 
   #dist from stats package
   dist_mat <- dist(data.scaled, method = distmethod) #'euclidean'
@@ -871,23 +873,25 @@ gwr_py <- function(salesdata = mgwrdata, kernel = 'gaussian', latlong = TRUE) {
   colnames(mgwrdata)[2] ="Latitude"
   colnames(mgwrdata)[3] ="TASP"
   #save R dataframe as csv for python scripts to call from
-  write.csv(mgwrdata, "C:\\Users\\Public\\rgwrc_hold\\sales_r.csv", row.names=FALSE)
+  write.csv(mgwrdata, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"sales_r.csv")), row.names=FALSE)
 
   #is latitude and longitude being used
   TFdf <- data.frame( #put results into an R object
     "TF" = latlong
     , stringsAsFactors = FALSE)
 
-  write.csv(TFdf, "C:\\Users\\Public\\rgwrc_hold\\TFdf_r.csv", row.names=FALSE)
+  write.csv(TFdf, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"TFdf_r.csv")), row.names=FALSE)
 
   if ( kernel == 'gaussian' ) {
     start_time <- Sys.time()
-    source_python("py_mgwr_gauss_auto.py")
+    #source_python("py_mgwr_gauss_auto.py")
+    source_python(system.file("python/py_mgwr_gauss_auto.py",package="rgwrc"))
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
   } else {
     start_time <- Sys.time()
-    source_python("py_mgwr_bisquare_auto.py")
+    #source_python("py_mgwr_bisquare_auto.py")
+    source_python(system.file("python/py_mgwr_bisquare_auto.py",package="rgwrc"))
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
   }
@@ -924,34 +928,36 @@ gwr.predict_py <- function(salesdata = mgwrdata, populationdata = mgwrpopData, k
   colnames(mgwrdata)[2] ="Latitude"
   colnames(mgwrdata)[3] ="TASP"
   #save R dataframe as csv for python scripts to call from
-  write.csv(mgwrdata, "C:\\Users\\Public\\rgwrc_hold\\sales_r.csv", row.names=FALSE)
+  write.csv(mgwrdata, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"sales_r.csv")), row.names=FALSE)
   mgwrpopData$Longitude <- mgwrpopData[,1]
   mgwrpopData$Latitude <- mgwrpopData[,2]
   mgwrpopData <- select(mgwrpopData, Longitude, Latitude, everything()) #data.frame reorder using dplyr
   #save R dataframe as csv for python scripts to call from
-  write.csv(mgwrpopData, "C:\\Users\\Public\\rgwrc_hold\\pop_r.csv", row.names=FALSE)
+  write.csv(mgwrpopData, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"pop_r.csv")), row.names=FALSE)
 
   split <- data.frame( #put results into an R object
     "splitnum" = ceiling(nrow(mgwrpopData)/nrow(mgwrdata))
     , stringsAsFactors = FALSE)
 
-  write.csv(split, "C:\\Users\\Public\\rgwrc_hold\\split_r.csv", row.names=FALSE)
+  write.csv(split, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"split_r.csv")), row.names=FALSE)
 
   #is latitude and longitude being used
   TFdf <- data.frame( #put results into an R object
     "TF" = latlong
     , stringsAsFactors = FALSE)
 
-  write.csv(TFdf, "C:\\Users\\Public\\rgwrc_hold\\TFdf_r.csv", row.names=FALSE)
+  write.csv(TFdf, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"TFdf_r.csv")), row.names=FALSE)
 
   if ( kernel == 'gaussian' ) {
     start_time <- Sys.time()
-    source_python("py_gwr_predict_auto_gauss.py")
+    #source_python("py_gwr_predict_auto_gauss.py")
+    source_python(system.file("python/py_gwr_predict_auto_gauss.py",package="rgwrc"))
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
   } else {
     start_time <- Sys.time()
-    source_python("py_gwr_predict_auto.py")
+    #source_python("py_gwr_predict_auto.py")
+    source_python(system.file("python/py_gwr_predict_auto.py",package="rgwrc"))
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
   }
@@ -971,4 +977,41 @@ gwr.predict_py <- function(salesdata = mgwrdata, populationdata = mgwrpopData, k
   .GlobalEnv$GWRPredictResults <- GWRPredictResults
   #GWRData <- rbind(GWRModelResults,GWRPredictResults)
   #return(GWRData)
+}
+
+#' Empty rgwrc_hold
+#'
+#' Finds all the files in the rgwrc_hold directory and then deletes them.
+#' @return Deletes all files in the rgwrc_hold directory.
+#' @examples
+#' empty_rgwrc_hold();
+#' @export
+empty_rgwrc_hold <- function() {
+  f <- list.files(file.path(system.file(package="rgwrc"), "rgwrc_hold"), include.dirs = F, full.names = T, recursive = T)
+  # remove the files
+  file.remove(f)
+}
+
+#' MiniConda Installation Info
+#'
+#' Tells the user how to install miniconda and the python packages to use.
+#'
+#' @examples
+#' rgwrc_miniconda_info();
+#' @export
+rgwrc_miniconda_info <- function() {
+message("#####Install reticulate to serve as the link between R and Miniconda#####
+install.packages(reticulate)
+library(reticulate) #Attach reticulate
+#####Install Miniconda#####
+install_miniconda(path = miniconda_path(), update = TRUE, force = FALSE)
+use_condaenv(condaenv = \"r-reticulate\", conda = \"auto\") #Select the version of Python to be used by reticulate
+py_config() #Retrieve information about the version of Python currently being used by reticulate
+#####Install the Pyhton libraries needed for the rgwrc pckage#####
+py_install(packages = c(\"pandas\")) #<- package names need quotations i.e. \"pandas\"
+py_install(packages = c(\"numpy==1.22.4\")) #default MGWR package numpy version is depreciated
+py_install(packages = c(\"geopandas\"))
+py_install(packages = c(\"scikit-learn\"))
+py_install(packages = c(\"mgwr\"))
+        ")
 }
