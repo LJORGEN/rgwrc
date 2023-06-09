@@ -10,7 +10,7 @@ For information on installing miniconda and the assocated python libraries run '
 For more information on mgwr please vist https://mgwr.readthedocs.io/en/latest/index.html")
 
   #set the working directory to the library containing the rgwrc package
-  setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
+  #setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
 
   #user_permission <- utils::askYesNo("Is miniconda already installed?
 #No to install miniconda.")
@@ -41,9 +41,9 @@ For more information on mgwr please vist https://mgwr.readthedocs.io/en/latest/i
   #}
 }
 #####set wd upon loading package#####
-.onLoad <- function(libname, pkgname) {
-  setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
-}
+#.onLoad <- function(libname, pkgname) {
+#  setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
+#}
 
 
 #' Mode Function
@@ -419,7 +419,11 @@ mgwr_c_bf_cpy <- function(yf, x, data, direc = 'backward', lonlat = TRUE, weight
     , stringsAsFactors = FALSE)
 
   write.csv(TFdf, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"TFdf_r.csv")), row.names=FALSE)
-
+#set working directory#
+#original working directory
+prime.wd <- getwd()
+#set the working directory to the library containing the rgwrc package for python script
+setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
   if (weight == "gaussian") {
 
     #run python mgwr gaussian kernel
@@ -438,6 +442,8 @@ mgwr_c_bf_cpy <- function(yf, x, data, direc = 'backward', lonlat = TRUE, weight
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
     #end of run
   }
+#reset working directory to the original working directory
+setwd(prime.wd)
 
   GWResults <- data.frame( #put results into an R object
     "pred" = as.numeric( gwr_adapt_python$predy )
@@ -886,7 +892,11 @@ gwr_py <- function(salesdata = mgwrdata, kernel = 'gaussian', latlong = TRUE) {
     , stringsAsFactors = FALSE)
 
   write.csv(TFdf, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"TFdf_r.csv")), row.names=FALSE)
-
+#set working directory#
+#original working directory
+prime.wd <- getwd()
+#set the working directory to the library containing the rgwrc package for python script
+setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
   if ( kernel == 'gaussian' ) {
     start_time <- Sys.time()
     #source_python("py_mgwr_gauss_auto.py")
@@ -900,7 +910,8 @@ gwr_py <- function(salesdata = mgwrdata, kernel = 'gaussian', latlong = TRUE) {
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
   }
-
+#reset working directory to the original working directory
+setwd(prime.wd)
   GWResults <- data.frame( #put results into an R object
     "pred" = as.numeric( gwr_adapt_python$predy )
     , stringsAsFactors = FALSE)
@@ -952,7 +963,11 @@ gwr.predict_py <- function(salesdata = mgwrdata, populationdata = mgwrpopData, k
     , stringsAsFactors = FALSE)
 
   write.csv(TFdf, gsub("/","\\\\",file.path(file.path(system.file(package="rgwrc"), "rgwrc_hold"),"TFdf_r.csv")), row.names=FALSE)
-
+#set working directory#
+#original working directory
+prime.wd <- getwd()
+#set the working directory to the library containing the rgwrc package for python script
+setwd(gsub("/rgwrc","",system.file(package="rgwrc")))
   if ( kernel == 'gaussian' ) {
     start_time <- Sys.time()
     #source_python("py_gwr_predict_auto_gauss.py")
@@ -966,6 +981,8 @@ gwr.predict_py <- function(salesdata = mgwrdata, populationdata = mgwrpopData, k
     end_time <- Sys.time()
     cat(paste0("Python MGWR Running Time ",round(end_time - start_time,2) ))
   }
+#reset working directory to the original working directory
+setwd(prime.wd)
 
   GWRModelResults <- data.frame( #put results into an R object
     #"FolioID" = sales$FolioID
