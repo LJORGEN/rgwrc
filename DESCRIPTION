@@ -6,7 +6,7 @@ Author: Luke Jorgensen
 Maintainer: Luke Jorgensen <ljorgen88@gmail.com>
 Description: Uses gwr and culster analysis for automated neighborhood generation,
     in conjuction with geo-spatial analysis functions.
-License: use_mit_license()
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
