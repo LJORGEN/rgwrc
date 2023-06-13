@@ -1,0 +1,12 @@
+citHeader("To cite rgwrc in publications use:")
+
+citEntry(
+  title    = "rgwrc: Geographically Weighted Regression Clustering",
+  author   = Luke Jorgensen,
+  year     = 2023,
+  url      = https://github.com/LJORGEN/rgwrc,
+  textVersion = paste( Jorgensen L (2023). rgwrc: Geographically Weighted Regression Clustering.
+  https://github.com/LJORGEN/rgwrc.
+
+  )
+)
