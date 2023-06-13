@@ -19,7 +19,11 @@ library(devtools)
 devtools::install_github("LJORGEN/rgwrc")
 
 #############################################
-
+MGWR:
 MGWR is under the BSD 3-Clause License: https://github.com/pysal/mgwr/blob/master/LICENSE.
 
 rgwrc is not endorsed by the authors and contributors of MGWR.
+
+#############################################
+reticulate:
+Ushey K, Allaire J, Tang Y (2023). reticulate: Interface to 'Python'. https://rstudio.github.io/reticulate/, https://github.com/rstudio/reticulate. 
